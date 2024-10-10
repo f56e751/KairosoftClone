@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.Analytics;
 // when user is in build mode, other ui should not be shown
 // so when user is in build mode, we can consider stopping time in game like 
@@ -11,17 +12,23 @@ using UnityEngine.Analytics;
 // ?? Or is there any other way ??
 // -> we can add UIManager class and control UI overlap
 // this class get info of current ui mode such as (build mode, 교수채용모드, 등) from other manager class
+
+// TODO consider rotation when building object
+// TODO add delete function
 public class BuildManager : Singleton<BuildManager>
 {
     // Start is called before the first frame update
     public GameObject basicTile;
     public Building basicBuilding;
-    bool isConstructionMode;
+    public Building Building_Dorm;
+    public Building Building_Lib;
+    public Building Building_Study;
+    private Building currentBuilding;
+    private bool isConstructionMode;
 
     [SerializeField] int xAxisNum = 100; // basic map x axis tile num
     [SerializeField] int zAxisNum = 100; // basic map z axis tile num
     [SerializeField] int length = 1; // tile prefab length of side
-    [SerializeField] private Subject subjectToObserve;
 
     public int minXAxisPosition => - xAxisNum / 2 * length;
     public int maxXAxisPosition => - xAxisNum / 2 * length + (xAxisNum - 1) * length;
@@ -38,14 +45,15 @@ public class BuildManager : Singleton<BuildManager>
     public Graph graph; // save tile position as graph
     public int totalBuildingsConstructedNum = 0;
 
+    private GameObject previewBuildingInstance;
+    private Material transparentMaterial;
+    private Material invalidPlacementMaterial;
+    private Quaternion currentBuildingRotation = Quaternion.identity;
+
 
     public override void Awake()
     {
         base.Awake(); // singleton class awake method executed
-        if (subjectToObserve != null)
-        {
-            subjectToObserve.ThingHappened += OnThingHappened;
-        }
 
         CreateTileGrid(xAxisNum, zAxisNum, length);
 
@@ -55,26 +63,165 @@ public class BuildManager : Singleton<BuildManager>
     }
     void Start()
     {
-        
-
-        // foreach (Vector3 p in shortestPath)
-        // {
-        //     Debug.Log($"path {p.x}, {p.z}");
-        // }
+        CreateTransparentMaterial();
+        CreateInvalidPlacementMaterial();   
     }
 
     // Update is called once per frame
     void Update()
     {
         UserBuild();
+
+        // 'T' 키를 눌렀을 때 (0, 0, 0) 위치에 Building 생성, 테스트용
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            InstantiateBuildingAtOrigin();
+        }
+
+
+        if (isConstructionMode)
+        {   
+            PreviewBuildingPlacement();
+            // 건물 회전 처리
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll != 0)
+            {
+                RotatePreviewBuilding(scroll);
+            }
+
+        }
+            
+        else
+        {
+            RemovePreview();
+        }
+            
     }
 
 
-    private void OnThingHappened()
-    {       
-        isConstructionMode = true; // 건설 모드 활성화
-        // Debug.Log("Observer responds");
+    // function for test
+    void InstantiateBuildingAtOrigin()
+    {
+        Vector3 originPosition = new Vector3(0, 0, 0); // 원점 위치
+        Building libInstance = Instantiate(Building_Lib, originPosition, Quaternion.identity); // Building_Lib 인스턴스화
+        libInstance.setId(totalBuildingsConstructedNum++); // ID 할당 및 건물 수 증가
     }
+
+    private void RotatePreviewBuilding(float scroll)
+    {
+        if (previewBuildingInstance != null)
+        {
+            currentBuildingRotation *= Quaternion.Euler(0, 90 * Mathf.Sign(scroll), 0);
+            previewBuildingInstance.transform.rotation = currentBuildingRotation;
+        }
+    }
+
+    private void CreateTransparentMaterial()
+    {
+        transparentMaterial = new Material(Shader.Find("Standard"));
+        transparentMaterial.color = new Color(1f, 1f, 1f, 0.5f); // 반투명
+        transparentMaterial.SetFloat("_Mode", 3); // Transparent mode
+        transparentMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        transparentMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        transparentMaterial.SetInt("_ZWrite", 0);
+        transparentMaterial.DisableKeyword("_ALPHATEST_ON");
+        transparentMaterial.EnableKeyword("_ALPHABLEND_ON");
+        transparentMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        transparentMaterial.renderQueue = 3000;
+    }
+
+
+    private void CreateInvalidPlacementMaterial()
+    {
+        invalidPlacementMaterial = new Material(Shader.Find("Standard"));
+        invalidPlacementMaterial.color = Color.red;
+        invalidPlacementMaterial.SetFloat("_Mode", 3); // Transparent mode
+        invalidPlacementMaterial.renderQueue = 3000;
+    }
+
+    private void PreviewBuildingPlacement()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit)) // Assuming groundLayer is defined
+        {
+            Vector3 buildPosition = CalculateBuildPosition(hit.point);
+            if (previewBuildingInstance == null)
+            {
+                previewBuildingInstance = Instantiate(currentBuilding.gameObject, buildPosition, Quaternion.identity);
+                SetMaterialToTransparent(previewBuildingInstance);
+            }
+            else
+            {
+                previewBuildingInstance.transform.position = buildPosition;
+            }
+
+            
+            // 위치 유효성 검사 및 색상 조정
+            if (isConstructable(CalculateOccupiedTiles(currentBuilding, (int)CalculateBuildPosition(buildPosition).x, (int)CalculateBuildPosition(buildPosition).z)))
+            {
+                SetMaterialToTransparent(previewBuildingInstance);
+            }
+            else
+            {
+                SetMaterialToInvalid(previewBuildingInstance);
+            }
+        }
+    }
+
+        private void SetMaterialToInvalid(GameObject building)
+    {
+        Renderer[] renderers = building.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.material = invalidPlacementMaterial;
+        }
+    }
+
+    
+
+    private Vector3 CalculateBuildPosition(Vector3 hitPoint)
+    {
+        int xTilePosition = Mathf.FloorToInt(hitPoint.x / length) * length;
+        int zTilePosition = Mathf.FloorToInt(hitPoint.z / length) * length;
+        return new Vector3(xTilePosition, 0, zTilePosition);
+    }
+
+    private void RemovePreview()
+    {
+        if (previewBuildingInstance != null)
+            Destroy(previewBuildingInstance);
+    }
+
+    private void SetMaterialToTransparent(GameObject building)
+    {
+        Renderer[] renderers = building.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.material = transparentMaterial;
+        }
+    }
+
+
+    public void SetCurrentBuilding(BuildingType type)
+    {
+        switch (type)
+        {
+            case BuildingType.Basic:
+                currentBuilding = basicBuilding;
+                break;
+            case BuildingType.Dorm:
+                currentBuilding = Building_Dorm;
+                break;
+            case BuildingType.Library:
+                currentBuilding = Building_Lib;
+                break;
+            case BuildingType.Study:
+                currentBuilding = Building_Study;
+                break;
+        }
+    }
+
 
     private void UserBuild()
     {
@@ -93,17 +240,20 @@ public class BuildManager : Singleton<BuildManager>
                 int xTilePosition = Mathf.FloorToInt(buildPosition.x / length) * length;
                 int zTilePosition = Mathf.FloorToInt(buildPosition.z / length) * length;
 
-                BuildObjectOnTile(basicBuilding, xTilePosition, zTilePosition);
-                basicBuilding.setId(totalBuildingsConstructedNum);
+                BuildObjectOnTile(currentBuilding, xTilePosition, zTilePosition, currentBuildingRotation);
+                currentBuilding.setId(totalBuildingsConstructedNum);
                 
+                currentBuildingRotation = Quaternion.identity;
             }
             totalBuildingsConstructedNum += 1;
             isConstructionMode = false;
         }
     }
 
-
-    
+    public void SetConstructionMode()
+    {
+        isConstructionMode = true;
+    }
 
 
     private void CreateTileGrid(int xAxisNum,  int zAxisNum, int length)  
@@ -121,42 +271,89 @@ public class BuildManager : Singleton<BuildManager>
         graph = new Graph(xAxisNum, zAxisNum, length);
     }
 
-
-    private void BuildObjectOnTile(Building building, int xPosition, int zPosition)
+    private List<(int,int)> CalculateOccupiedTiles(Building building, int xPosition, int zPosition)
     {
-        
-        int xLength = building.XLength;
-        int yLength = building.YLength;
-        int zLength = building.ZLength;
+        int xLength = building.GetXLength();
+        int yLength = building.GetYLength();
+        int zLength = building.GetZLength();
         List<(int,int)> occupiedTiles = new List<(int,int)> ();
 
-        int startX = xPosition - (xLength - 1) / 2;
-        int startZ = zPosition - (zLength - 1) / 2;
-
+        int startX, startZ; 
+        (startX, startZ) = CalculateStartPoint(building, xPosition, zPosition);
 
         for (int i = 0; i < xLength; i++)
         {
             for (int j = 0; j < zLength; j++)
             {   
-                if (j == building.centerZ && i <= building.centerX) continue; // 빌딩 중심까지 빈칸으로 남겨둠
+                if (j <= building.centerZ && i == building.centerX) continue; // 빌딩 중심까지 빈칸으로 남겨둠
                 occupiedTiles.Add((startX + i * length, startZ + j * length));
             }
         }
+        return occupiedTiles;
+    }
+
+    private (int startX, int startZ) CalculateStartPoint(Building building, int xPosition, int zPosition)
+    {   
+        int xLength = building.GetXLength();
+        int zLength = building.GetZLength();
+
+
+        
+
+        // Vector3 eulerAngles = currentBuildingRotation.eulerAngles;
+        // bool isRotated90Or270 = Math.Abs(Math.Round(eulerAngles.y) % 360) == 90 || Math.Abs(Math.Round(eulerAngles.y) % 360) == 270;
+
+        // // 90도나 270도 회전했다면, X와 Z 길이를 스왑
+        // if (isRotated90Or270)
+        // {
+        //     int temp = xLength;
+        //     xLength = zLength;
+        //     zLength = temp;
+        // }
 
 
 
+        int startX = xPosition - (xLength - 1) / 2;
+        int startZ = zPosition - (zLength - 1) / 2;
+        return (startX, startZ);
+    }
+
+
+    private void BuildObjectOnTile(Building building, int xPosition, int zPosition, Quaternion rotation)
+    {
+        
+        // int xLength = building.GetXLength();
+        // int yLength = building.GetYLength();
+        // int zLength = building.GetZLength();
+        List<(int,int)> occupiedTiles = new List<(int,int)> ();
+
+        int startX, startZ; 
+        (startX, startZ) = CalculateStartPoint(building, xPosition, zPosition);
+
+
+        // for (int i = 0; i < xLength; i++)
+        // {
+        //     for (int j = 0; j < zLength; j++)
+        //     {   
+        //         if (j == building.centerZ && i <= building.centerX) continue; // 빌딩 중심까지 빈칸으로 남겨둠
+        //         occupiedTiles.Add((startX + i * length, startZ + j * length));
+        //     }
+        // }
+
+        occupiedTiles = CalculateOccupiedTiles(building, xPosition, zPosition);
+    
 
         if (isConstructable(occupiedTiles))
         {   
             int globalCoorBuilingCenterX = startX + building.centerX;
             int globalCoorBuilingCenterZ = startZ + building.centerZ;
 
-            Debug.Log($"constructable!!!!!, building center is {globalCoorBuilingCenterX}, {globalCoorBuilingCenterZ}");
+            // Debug.Log($"constructable!!!!!, building center is {globalCoorBuilingCenterX}, {globalCoorBuilingCenterZ}");
             
-            Vector3 position = new Vector3(xPosition, (float) (yLength / 2.0), zPosition);
-            Building newBuilding = Instantiate(building, position, Quaternion.identity);
+            Vector3 position = new Vector3(xPosition, (float) 0, zPosition);
+            Building newBuilding = Instantiate(building, position, rotation);
             newBuilding.setId(totalBuildingsConstructedNum);
-            Debug.Log($"building.Id: {newBuilding.Id}");
+            // Debug.Log($"building.Id: {newBuilding.Id}");
 
             GameManager.Instance.UpdateGold(-newBuilding.BaseCost);
             graph.ChangeNodeOccupiedState(occupiedTiles, true);
@@ -218,3 +415,4 @@ public class BuildManager : Singleton<BuildManager>
         }
     }
 }
+

@@ -29,4 +29,19 @@ public abstract class Building: MonoBehaviour
     {
         Id = id;
     }
+
+    public int GetXLength()
+    {
+        return XLength;
+    }
+
+    public int GetYLength()
+    {
+        return YLength;
+    }
+
+    public int GetZLength()
+    {
+        return ZLength;
+    }
 }

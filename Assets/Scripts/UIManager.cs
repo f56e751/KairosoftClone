@@ -11,6 +11,14 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private TextMeshProUGUI  monthText;
     [SerializeField] private Button hireProfessorButton;
 
+    [SerializeField] private Button buildButton;
+    [SerializeField] private Button deleteButton;
+    [SerializeField] private Button studyBuildingButton;
+    [SerializeField] private Button dormBuildingButton;
+    [SerializeField] private Button libraryBuildingButton;
+
+    private bool isBuildingMenuVisible = false; // 건물 메뉴의 표시 상태를 추적하는 변수
+
     void Start()
     {
         GameManager.Instance.OnStudentCountChanged += UpdateStudentCount;
@@ -20,6 +28,14 @@ public class UIManager : Singleton<UIManager>
         GameManager.Instance.OnSeasonChanged += UpdateMonth;
 
         hireProfessorButton.onClick.AddListener(OnHireProfessorButtonClicked);
+        buildButton.onClick.AddListener(ToggleBuildingButtons);
+
+        // 버튼 클릭 리스너를 추가
+        studyBuildingButton.onClick.AddListener(() => SetBuildingMode(BuildingType.Study));
+        dormBuildingButton.onClick.AddListener(() => SetBuildingMode(BuildingType.Dorm));
+        libraryBuildingButton.onClick.AddListener(() => SetBuildingMode(BuildingType.Library));
+
+        deleteButton.onClick.AddListener(OnDeleteButtonClicked);
 
         // 초기 UI 업데이트
         UpdateStudentCount(GameManager.Instance.studentNum);
@@ -27,6 +43,48 @@ public class UIManager : Singleton<UIManager>
         UpdateProfessorCount(GameManager.Instance.professorNum);
         UpdateFameCount(GameManager.Instance.fame);
     }
+
+    void SetBuildingMode(BuildingType buildingType)
+    {
+        BuildManager.Instance.SetCurrentBuilding(buildingType);
+        BuildManager.Instance.SetConstructionMode(); // 건설 모드를 활성화
+    }
+
+    private void OnDeleteButtonClicked()
+    {
+        // BuildManager.Instance.DeleteSelectedBuilding(); // 선택된 건물 삭제
+    }
+
+    private void ToggleBuildingButtons()
+    {
+        if (isBuildingMenuVisible)
+        {
+            HideBuildingButtons();
+        }
+        else
+        {
+            ShowBuildingButtons();
+        }
+        isBuildingMenuVisible = !isBuildingMenuVisible; // 상태 토글
+    }
+
+
+    private void ShowBuildingButtons()
+    {
+        // 각 건물 건설 버튼을 활성화
+        studyBuildingButton.gameObject.SetActive(true);
+        dormBuildingButton.gameObject.SetActive(true);
+        libraryBuildingButton.gameObject.SetActive(true);
+    }
+
+    public void HideBuildingButtons()
+    {
+        studyBuildingButton.gameObject.SetActive(false);
+        dormBuildingButton.gameObject.SetActive(false);
+        libraryBuildingButton.gameObject.SetActive(false);
+    }
+
+
 
     private void OnHireProfessorButtonClicked()
     {
