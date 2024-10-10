@@ -131,6 +131,7 @@ public class GameManager : Singleton<GameManager>
     }
 
 
+
     // public void UpdateFame(float amount)
     // {
     //     fame += amount;
