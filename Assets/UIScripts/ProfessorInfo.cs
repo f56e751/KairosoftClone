@@ -107,7 +107,7 @@ public class ProfessorInfo : MonoBehaviour
         }
         else if (professor.kind == "부교수")
         {
-            goldCost = 500;
+            goldCost = 750;
         }
         else if (professor.kind == "정교수")
         {

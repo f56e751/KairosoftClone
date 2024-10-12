@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6658709683595405140
+--- !u!1 &7262584509517535740
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2355672054076780109}
-  - component: {fileID: 8911100011716225525}
-  - component: {fileID: 4524736239487438557}
+  - component: {fileID: 1734053312726814949}
+  - component: {fileID: 4830965140410554205}
+  - component: {fileID: 462332198986985589}
   m_Layer: 5
-  m_Name: ProfessorInfo
+  m_Name: MoneyBuildingInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2355672054076780109
+--- !u!224 &1734053312726814949
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6658709683595405140}
+  m_GameObject: {fileID: 7262584509517535740}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -34,24 +34,24 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 1, y: -406}
+  m_AnchoredPosition: {x: -4.5009766, y: -19}
   m_SizeDelta: {x: 260, y: 50}
   m_Pivot: {x: 0.5, y: 1}
---- !u!222 &8911100011716225525
+--- !u!222 &4830965140410554205
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6658709683595405140}
+  m_GameObject: {fileID: 7262584509517535740}
   m_CullTransparentMesh: 1
---- !u!114 &4524736239487438557
+--- !u!114 &462332198986985589
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6658709683595405140}
+  m_GameObject: {fileID: 7262584509517535740}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
@@ -78,4 +78,5 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uAD50\uC218\uC774\uB984/\uC6D4\uAE09/\uD559\uACFC"
+  m_Text: "\uC2DC\uC124\uC378\uB124\uC77C/\uC2DC\uC124\uC774\uB984/\uC9C0\uB09C\uB2EC
+    \uC218\uC785"
