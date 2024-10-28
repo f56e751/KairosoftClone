@@ -1,17 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static BuildingInfoManager;
 
-
-
 public class BuildingInfoManager : MonoBehaviour
 {
-    public Button movableButton; // 움직일 UIButton
-
     // Building 구조체 정의
     public struct Building
     {
@@ -34,14 +29,15 @@ public class BuildingInfoManager : MonoBehaviour
 
     // 건물 정보를 저장할 리스트
     List<Building> buildingList = new List<Building>();
-    // '건설된 건물'의 개수를 저장할 Dictionary
-    public static Dictionary<string, int> constructedBuildingCounts = new Dictionary<string, int>();
+
+    // **[추가된 부분]** 건설된 건물의 개수를 저장할 Dictionary
+    Dictionary<string, int> constructedBuildingCounts = new Dictionary<string, int>();
 
     // ScrollView의 Content 참조 (이미 존재하는 BuildingInfo들을 포함한)
     public RectTransform contentTransform;
+
     // 게임 매니저 참조
     private GameManager gameManager;
-
 
     // BuildScene이 활성화될 때 호출
     void OnEnable()
@@ -119,17 +115,15 @@ public class BuildingInfoManager : MonoBehaviour
             }
         }
     }
+
     void InstallBuilding(Building building, string buildingInfoName)
     {
-        // contentTransform에서 buildingInfoName으로 오브젝트를 찾기
-        Transform buildingInfoTransform = contentTransform.Find(buildingInfoName);
-        if (buildingInfoTransform == null)
+        GameObject buildingInfoObject = GameObject.Find(buildingInfoName);
+        if (buildingInfoObject == null)
         {
             Debug.LogError("BuildingInfo 오브젝트를 찾을 수 없습니다: " + buildingInfoName);
             return;
         }
-
-        GameObject buildingInfoObject = buildingInfoTransform.gameObject;
 
         Text buildingNameText = buildingInfoObject.transform.Find("BuildingName")?.GetComponent<Text>();
         if (buildingNameText == null)
@@ -146,7 +140,7 @@ public class BuildingInfoManager : MonoBehaviour
                 gameManager.UpdateGold(-cost);
                 Debug.Log(building.name + " 설치 완료! 비용: -" + cost + " 골드 차감됨.");
 
-                // 건물 건설 횟수 업데이트
+                // **[추가된 부분]** 건물 건설 시 개수 업데이트
                 if (constructedBuildingCounts.ContainsKey(building.name))
                 {
                     constructedBuildingCounts[building.name]++;
@@ -156,28 +150,13 @@ public class BuildingInfoManager : MonoBehaviour
                     constructedBuildingCounts[building.name] = 1;
                 }
 
-                // 건물 건설 횟수 출력
+                // 모든 건물의 건설 횟수 출력
                 foreach (var entry in constructedBuildingCounts)
                 {
                     Debug.Log(entry.Key + " 건설 횟수: " + entry.Value);
                 }
 
-                // 스크린 프리팹 비활성화
-                gameObject.SetActive(false); // BuildScene 프리팹 비활성화
 
-                // 새로운 movableButton 생성
-                GameObject newMovableButton = Instantiate(movableButton.gameObject);
-
-                // Canvas 찾기
-                GameObject canvasObject = GameObject.Find("Canvas");
-                if (canvasObject != null)
-                {
-                    newMovableButton.transform.SetParent(canvasObject.transform, false);
-                }
-                else
-                {
-                    Debug.LogError("Canvas 오브젝트를 찾을 수 없습니다.");
-                }
             }
             else
             {
@@ -185,16 +164,10 @@ public class BuildingInfoManager : MonoBehaviour
             }
 
             Button installButton = buildingInfoObject.transform.Find("InstallButton")?.GetComponent<Button>();
-            if (installButton != null)
-            {
-                installButton.onClick.RemoveAllListeners(); // 기존 리스너 제거
-                installButton.onClick.AddListener(() => InstallBuilding(building, buildingInfoName)); // 새로운 리스너 추가
-            }
         }
         else
         {
             Debug.LogError("건물 이름이 일치하지 않습니다: " + building.name + " != " + buildingNameText.text);
         }
     }
-
 }

@@ -5192,8 +5192,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88292229afcbeda42943d81f50f019bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movableButton: {fileID: 2987328372608875342, guid: 631c4ba4aa6de044ca34896c2e7588d9, type: 3}
   contentTransform: {fileID: 7984403961450632200}
+  gameManager: {fileID: 0}
 --- !u!1 &5058061247921304401
 GameObject:
   m_ObjectHideFlags: 0

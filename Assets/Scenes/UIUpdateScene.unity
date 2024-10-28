@@ -7277,9 +7277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc3b73f4239b024498d9fd9d895ce609, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  professorInfoPrefab: {fileID: 0}
-  BuildingInfoPrefab: {fileID: 0}
-  IncomeText: {fileID: 0}
 --- !u!224 &4776109199106026140
 RectTransform:
   m_ObjectHideFlags: 0
