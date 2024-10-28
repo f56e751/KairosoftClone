@@ -359,8 +359,12 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.19f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.19f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/Building.cs"
+"Assets/Scripts/BuildingType.cs"
 "Assets/Scripts/Building_basicBuilding.cs"
+"Assets/Scripts/Building_dorm.cs"
+"Assets/Scripts/Building_lib.cs"
 "Assets/Scripts/BuildManager.cs"
+"Assets/Scripts/CameraController.cs"
 "Assets/Scripts/GameManager.cs"
 "Assets/Scripts/Graph.cs"
 "Assets/Scripts/PriorityQueue.cs"
@@ -370,6 +374,10 @@
 "Assets/Scripts/UIManager.cs"
 "Assets/Scripts/UnitMovementManager.cs"
 "Assets/Scripts/UnitMover.cs"
+"Assets/UIScripts/BuildingInfoManager.cs"
+"Assets/UIScripts/ProfessorInfo.cs"
+"Assets/UIScripts/SummaryScreenManager.cs"
+"Assets/UIScripts/ToggleButtons.cs"
 -langversion:9.0
 
 /deterministic

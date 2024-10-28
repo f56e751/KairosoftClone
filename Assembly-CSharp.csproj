@@ -63,10 +63,17 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.19f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\UIScripts\SummaryScreenManager.cs" />
+    <Compile Include="Assets\UIScripts\BuildingInfoManager.cs" />
     <Compile Include="Assets\Scripts\UnitMovementManager.cs" />
+    <Compile Include="Assets\Scripts\Building_lib.cs" />
+    <Compile Include="Assets\Scripts\Building_dorm.cs" />
+    <Compile Include="Assets\UIScripts\ToggleButtons.cs" />
     <Compile Include="Assets\Scripts\Building_basicBuilding.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\Building.cs" />
+    <Compile Include="Assets\Scripts\BuildingType.cs" />
+    <Compile Include="Assets\UIScripts\ProfessorInfo.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\BuildManager.cs" />
     <Compile Include="Assets\Scripts\Graph.cs" />
@@ -74,6 +81,7 @@
     <Compile Include="Assets\Scripts\PriorityQueue.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\StudentPoolManager.cs" />
+    <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Subject.cs" />
   </ItemGroup>
   <ItemGroup>
