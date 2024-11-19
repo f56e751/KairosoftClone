@@ -16,6 +16,7 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Button studyBuildingButton;
     [SerializeField] private Button dormBuildingButton;
     [SerializeField] private Button libraryBuildingButton;
+    [SerializeField] private Button restaurantBuildingButton;
 
     private bool isBuildingMenuVisible = false; // 건물 메뉴의 표시 상태를 추적하는 변수
 
@@ -34,6 +35,7 @@ public class UIManager : Singleton<UIManager>
         studyBuildingButton.onClick.AddListener(() => SetBuildingMode(BuildingType.Study));
         dormBuildingButton.onClick.AddListener(() => SetBuildingMode(BuildingType.Dorm));
         libraryBuildingButton.onClick.AddListener(() => SetBuildingMode(BuildingType.Library));
+        restaurantBuildingButton.onClick.AddListener(() => SetBuildingMode(BuildingType.Restaurant));
 
         deleteButton.onClick.AddListener(OnDeleteButtonClicked);
 
@@ -75,6 +77,7 @@ public class UIManager : Singleton<UIManager>
         studyBuildingButton.gameObject.SetActive(true);
         dormBuildingButton.gameObject.SetActive(true);
         libraryBuildingButton.gameObject.SetActive(true);
+        restaurantBuildingButton.gameObject.SetActive(true);
     }
 
     public void HideBuildingButtons()
@@ -82,6 +85,7 @@ public class UIManager : Singleton<UIManager>
         studyBuildingButton.gameObject.SetActive(false);
         dormBuildingButton.gameObject.SetActive(false);
         libraryBuildingButton.gameObject.SetActive(false);
+        restaurantBuildingButton.gameObject.SetActive(false);
     }
 
 

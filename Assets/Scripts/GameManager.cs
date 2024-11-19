@@ -7,7 +7,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private GameObject studentPrefab;
     private Vector3 entrancePosition; // 정문 위치
     private int currentSeason = 1;  // 현재 계절을 나타내는 변수 (1부터 12까지)
-    private float seasonDuration = 10f;  // 각 계절의 지속 시간 (초 단위)
+    private float seasonDuration = 20f;  // 각 계절의 지속 시간 (초 단위)
     private float seasonTimer = 0f;  // 계절의 경과 시간을 추적하는 타이머
     public int studentNum = 10;
     public int professorNum = 3;

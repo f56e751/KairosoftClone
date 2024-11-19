@@ -10,8 +10,8 @@ public class UnitMover : MonoBehaviour
 {   
 
     public GameObject unitToMove;
-    [SerializeField] float yAxis;
-    [SerializeField] float speed = 0.3f;
+    [SerializeField] public float yAxis = 0;
+    [SerializeField] public float speed = 10f;
     float moveThreshold = 0.1f;
     public bool isArrived = false;
     bool isFirstSearch = true;

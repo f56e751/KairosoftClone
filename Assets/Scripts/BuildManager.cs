@@ -23,6 +23,7 @@ public class BuildManager : Singleton<BuildManager>
     public Building Building_Dorm;
     public Building Building_Lib;
     public Building Building_Study;
+    public Building Building_Restaurant;
     private Building currentBuilding;
     private bool isConstructionMode;
 
@@ -218,6 +219,9 @@ public class BuildManager : Singleton<BuildManager>
                 break;
             case BuildingType.Study:
                 currentBuilding = Building_Study;
+                break;
+            case BuildingType.Restaurant:
+                currentBuilding = Building_Restaurant;
                 break;
         }
     }
