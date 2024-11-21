@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67628232b6b37854bae8cf539bba7cdf, type: 3}
+  m_Name: NewFoundation 1
+  m_EditorClassIdentifier: 
+  FoundationID: 2
+  FoundationName: "\uCC3D\uC5C5 \uC608\uC2DC2"
+  FoundationDescription: "\uD558\uD558\uD638\uD638"
+  FoundationCost: 5000
+  Reward: 44444
+  SuccessProbability: 0.5
+  StartDate: 0
+  EndDate: 0
+  Students:
+  - {fileID: 11400000, guid: abce815731c48bf4d8f46204fd56612d, type: 2}
+  - {fileID: 11400000, guid: 922f9d5e1d6eaa24c8a1c0930ba032f3, type: 2}
+  FoundationLevel: 1
+  RequiredMajorID: 0000000007000000
+  RequiredStat0: 0000000096000000000000000000000096000000
+  RequiredStat1: 9600000000000000000000000000000000000000
+  RequiredStat2: 
+  RequiredStat3: 
+  RequiredStat4: 
+  RequiredStat5: 
+  RequiredStat6: 
