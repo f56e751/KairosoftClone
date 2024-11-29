@@ -335,14 +335,6 @@ public class BuildManager : Singleton<BuildManager>
         (startX, startZ) = CalculateStartPoint(building, xPosition, zPosition);
 
 
-        // for (int i = 0; i < xLength; i++)
-        // {
-        //     for (int j = 0; j < zLength; j++)
-        //     {   
-        //         if (j == building.centerZ && i <= building.centerX) continue; // 빌딩 중심까지 빈칸으로 남겨둠
-        //         occupiedTiles.Add((startX + i * length, startZ + j * length));
-        //     }
-        // }
 
         occupiedTiles = CalculateOccupiedTiles(building, xPosition, zPosition);
     
